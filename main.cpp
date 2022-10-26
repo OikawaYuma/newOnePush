@@ -37,6 +37,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int craneGh = Novice::LoadTexture("./Resources/reachStacker.png");
 	int skyGh = Novice::LoadTexture("./Resources/sky.png");
 	int stageMap = Novice::LoadTexture("./resources/stageLineAndFlooar.png");
+	int playerRight[2] = { 
+		Novice::LoadTexture("./resources/playerRight1.png"),
+		Novice::LoadTexture("./resources/playerRight2.png") 
+	};
+	int playerLeft[2] = {
+		Novice::LoadTexture("./resources/playerLeft1.png"),
+		Novice::LoadTexture("./resources/playerLeft2.png")
+	};
 	enum gameSelect {
 		TITLE,
 		STAGESELECT,
@@ -50,6 +58,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		STAGE2,
 	};
 	int stageNum = TUTLIAL;
+	int animeCount = 0;
+	int playerAnimation = animeCount / 30;
 
 	//マップチップ配列
 	int MAP_chiplist[kMAP_SIZE_HEIGHT][kMAP_SIZE_WIDTH]
@@ -60,21 +70,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-
-
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -85,24 +91,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int MAP_chiplist_TUTLIAL[kMAP_SIZE_HEIGHT][kMAP_SIZE_WIDTH]
 	{
 		{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+		{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+		{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+		{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,},
-
+		{0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,},
+		{0,0,0,0,0,0,1,2,2,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,4,0,0,},
 		{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
 		{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
 		{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
@@ -113,6 +116,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int MAP_chiplist_STAGE1[kMAP_SIZE_HEIGHT][kMAP_SIZE_WIDTH]
 	{
 		{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+		{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+		{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+		{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
@@ -122,14 +131,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,},
+		{0,0,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,},
+		{0,0,0,0,0,0,1,2,1,0,4,0,0,1,0,0,0,0,0,1,1,0,0,0,4,0,2,0,0,0,},
 
 		{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
 		{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
@@ -140,23 +143,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int MAP_chiplist_STAGE2[kMAP_SIZE_HEIGHT][kMAP_SIZE_WIDTH]
 	{
 		{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+		{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+		{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+		{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,2,0,4,1,},
+		{0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,},
+		{0,0,0,0,0,0,0,1,0,0,2,1,0,0,0,0,0,0,2,1,1,1,1,1,1,1,1,1,1,1,},
+		{0,0,0,0,0,0,1,2,4,0,2,1,0,1,4,0,0,0,2,1,1,1,1,1,1,1,1,1,1,1,},
 
 		{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
 		{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
@@ -262,15 +265,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	};
 
-	Vector2 cranepos = { 896,32 };
+	Vector2 cranepos = { 896,128 };
 	Vector2 craneArray = { 0,0 };
 	Vector2 craneTmp = { 0,0 };
 	Vector2 craneTmpSpeed = { 0,0 };
 
-	int frameTimer = 10;
+	int frameTimer = 7;
 	int frameTimerF = false;
 	int craneSpeed = 32;
-	int craneDropSpeed = 2;
+	int craneDropSpeed = 4;
 
 
 
@@ -317,6 +320,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					for (int i = 0; i < 20; i++) {
 						for (int j = 0; j < 30; j++) {
 							tmpMAP_chiplist[i][j] = MAP_chiplist_TUTLIAL[i][j];
+							player.x = 312;
+							player.y = 488;
 						}
 					}
 					gameSelect = PLAY;
@@ -325,6 +330,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					for (int i = 0; i < 20; i++) {
 						for (int j = 0; j < 30; j++) {
 							tmpMAP_chiplist[i][j] = MAP_chiplist_STAGE1[i][j];
+							player.x = 510;
+							player.y = 488;
 						}
 					}
 					gameSelect = PLAY;
@@ -333,18 +340,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					for (int i = 0; i < 20; i++) {
 						for (int j = 0; j < 30; j++) {
 							tmpMAP_chiplist[i][j] = MAP_chiplist_STAGE2[i][j];
+							player.x = 704;
+							player.y =392 ;
 						}
 					}
 					gameSelect = PLAY;
 				}
-				
-				
+
+
 			}
 			break;
 		}
 		case PLAY: {
 
-
+			animeCount++;
+			playerAnimation = animeCount / 30;
+			if (animeCount >= 60) {
+				animeCount = 0;
+			}
 
 
 
@@ -370,8 +383,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				{
 				case moveCrane:
 					if (frameTimerF == true) {
-						frameTimer -= 1;
-						if (frameTimer == 0) {
+						frameTimer -= 4;
+						if (frameTimer <= 0) {
 							craneTmp.x = cranepos.x - craneSpeed;
 							craneArray.x = craneTmp.x / kMAPCHIP_WIDTH;
 							frameTimer = 100;
@@ -411,6 +424,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					else if (tmpMAP_chiplist[craneArray.y][craneArray.x] == 3) {
 						craneScene = 2;
 					}
+					else if (tmpMAP_chiplist[craneArray.y][craneArray.x] == 4) {
+						craneScene = 2;
+					}
 					break;
 				case removeCrane:
 					craneTmp.y = cranepos.y - craneDropSpeed;
@@ -431,8 +447,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				case drop:
 					if (frameTimerF == true) {
-						frameTimer -= 1;
-						if (frameTimer == 0) {
+						frameTimer -= 4;
+						if (frameTimer <= 0) {
 							craneTmp.x = cranepos.x - craneSpeed;
 							craneArray.x = craneTmp.x / kMAPCHIP_WIDTH;
 							frameTimer = 100;
@@ -568,7 +584,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				pos.leftBottom.y = (player.y + kPlayer_SIZE) / kBLOCK_SIZE;
 				pos.rightBottom.y = (player.y + kPlayer_SIZE) / kBLOCK_SIZE;
-				if (tmpMAP_chiplist[pos.leftBottom.y][pos.leftBottom.x] != NONE && tmpMAP_chiplist[pos.rightBottom.y][pos.rightBottom.x] != NONE) {
+
+				if (tmpMAP_chiplist[pos.leftBottom.y][pos.leftBottom.x] == 4 && tmpMAP_chiplist[pos.rightBottom.y][pos.rightBottom.x] == 4) {
+					if (tmpMAP_chiplist[pos.leftBottom.y][pos.leftBottom.x] == 4) {
+						tmpMAP_chiplist[pos.leftBottom.y][pos.leftBottom.x] = NONE;
+					}
+					if (tmpMAP_chiplist[pos.rightBottom.y][pos.rightBottom.x] == 4) {
+						tmpMAP_chiplist[pos.rightBottom.y][pos.rightBottom.x] = NONE;
+					}
+				}
+				else if (tmpMAP_chiplist[pos.leftBottom.y][pos.leftBottom.x] != NONE && tmpMAP_chiplist[pos.rightBottom.y][pos.rightBottom.x] != NONE) {
 					playerJump = 0;
 					playerSpeed.y = 0;
 					if (isPlayerJump == true && playerJump <= 0) {
@@ -595,7 +620,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				pos.leftBottom.x = (player.x - tmpSpeed) / kBLOCK_SIZE;
 				pos.rightBottom.x = (player.x + kPlayer_SIZE) / kBLOCK_SIZE;
 				pos.rightTop.x = (player.x + kPlayer_SIZE) / kBLOCK_SIZE;
-				if (tmpMAP_chiplist[pos.leftTop.y][pos.leftTop.x] != NONE && tmpMAP_chiplist[pos.leftBottom.y][pos.leftBottom.x] != NONE) {
+				if (tmpMAP_chiplist[pos.leftTop.y][pos.leftTop.x] == 4 || tmpMAP_chiplist[pos.leftBottom.y][pos.leftBottom.x] == 4) {
+					if (tmpMAP_chiplist[pos.leftTop.y][pos.leftTop.x] == 4) {
+						tmpMAP_chiplist[pos.leftTop.y][pos.leftTop.x] = NONE;
+					}
+					if (tmpMAP_chiplist[pos.leftBottom.y][pos.leftBottom.x] == 4) {
+						tmpMAP_chiplist[pos.leftBottom.y][pos.leftBottom.x] = NONE;
+					}
+				}
+				else if (tmpMAP_chiplist[pos.leftTop.y][pos.leftTop.x] != NONE && tmpMAP_chiplist[pos.leftBottom.y][pos.leftBottom.x] != NONE) {
 					playerSpeed.x = 1;
 
 				}
@@ -603,7 +636,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					playerSpeed.x = 1;
 				}
 
-				if (tmpMAP_chiplist[pos.rightTop.y][pos.rightTop.x] != NONE && tmpMAP_chiplist[pos.rightBottom.y][pos.rightBottom.x] != NONE) {
+				if (tmpMAP_chiplist[pos.rightTop.y][pos.rightTop.x] == 4 || tmpMAP_chiplist[pos.rightBottom.y][pos.rightBottom.x] == 4) {
+					if (tmpMAP_chiplist[pos.rightTop.y][pos.rightTop.x] == 4) {
+						tmpMAP_chiplist[pos.rightTop.y][pos.rightTop.x] = NONE;
+					}
+					if (tmpMAP_chiplist[pos.rightBottom.y][pos.rightBottom.x] == 4) {
+						tmpMAP_chiplist[pos.rightBottom.y][pos.rightBottom.x] = NONE;
+					}
+				}
+				else if (tmpMAP_chiplist[pos.rightTop.y][pos.rightTop.x] != NONE && tmpMAP_chiplist[pos.rightBottom.y][pos.rightBottom.x] != NONE) {
 					playerSpeed.x = -1;
 				}
 				else if (tmpMAP_chiplist[pos.rightTop.y][(player.x + kPlayer_SIZE * 2) / kBLOCK_SIZE] == NONE && tmpMAP_chiplist[(player.y + kPlayer_SIZE - tmpSpeed) / kBLOCK_SIZE][(player.x + kPlayer_SIZE + tmpSpeed) / kBLOCK_SIZE] != NONE) {
@@ -635,6 +676,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		switch (gameSelect) {
 		case TITLE: {
 
+
 			break;
 		}
 		case STAGESELECT: {
@@ -657,14 +699,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						//Novice::DrawBox(j * kMAPCHIP_WIDTH, i * kMAPCHIP_HEIGHT, kMAPCHIP_WIDTH, kMAPCHIP_HEIGHT, 0.0f, GREEN, kFillModeSolid);
 
 					}
+					if (tmpMAP_chiplist[i][j] == 4) {
+						Novice::DrawSprite(j * kMAPCHIP_WIDTH, i * kMAPCHIP_HEIGHT, paper_Resorces, 1.0f, 1.0f, 0.0f, 0xffffffff);
+						//Novice::DrawBox(j * kMAPCHIP_WIDTH, i * kMAPCHIP_HEIGHT, kMAPCHIP_WIDTH, kMAPCHIP_HEIGHT, 0.0f, GREEN, kFillModeSolid);
+
+					}
 
 				}
 			}
-			Novice::DrawBox(player.x, player.y, kPlayer_SIZE, kPlayer_SIZE, 0.0f, BLUE, kFillModeSolid);
+			Novice::DrawSprite(player.x, player.y, playerRight1_Resorces, 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
+			//Novice::DrawSprite();
 			if (blockF == true) {
-				Novice::DrawSprite(cranepos.x, cranepos.y, M_block_Resorces, 1.0f,1.0f, 0.0f, 0xFFFFFFFF);
+				Novice::DrawSprite(cranepos.x, cranepos.y, M_block_Resorces, 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
 			}
-			Novice::DrawSprite(cranepos.x - 32, cranepos.y - 512 , craneGh, 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
+			Novice::DrawSprite(cranepos.x - 32, cranepos.y - 512, craneGh, 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
 			break;
 		}
 		case GAME_CLEAR: {
@@ -696,4 +744,3 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Novice::Finalize();
 	return 0;
 }
-
